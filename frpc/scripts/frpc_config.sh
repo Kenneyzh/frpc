@@ -5,6 +5,8 @@ source $KSROOT/scripts/base.sh
 eval `dbus export frpc_`
 
 conf_file="$KSROOT/frpc/frpc.ini"
+version=`$KSROOT/frpc/frpc --version`
+dbus set frpc_version=$version
 
 write_conf(){
     echo "[common]" > $conf_file

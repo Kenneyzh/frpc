@@ -76,6 +76,9 @@ this.init( 'frpc-grid', '', 50, [
 { type: 'select' ,options:[['关闭','关闭'],['开启','开启']]},
 ] );
 this.headerSet( [ '服务名称', '协议类型', '域名', '内网地址' ,'内网端口','远程端口','压缩','加密','特权模式'] );
+if (Apps.frpc_srlist == undefined||Apps.frpc_srlist == null){
+		Apps.frpc_srlist = '';
+	}
 var s = Apps.frpc_srlist.split( '>' );
 for ( var i = 0; i < s.length; ++i ) {
 	var t = s[ i ].split( '<' );
@@ -99,11 +102,7 @@ function save(){
 	Apps.frpc_common_auth_token = E('_frpc_common_auth_token').value;
 	Apps.frpc_common_privilege_token = E('_frpc_common_privilege_token').value;
 	Apps.frpc_srlist = frpc_srlist;
-	//Apps.frpc_ttl = E('_frpc_ttl').value;
-	//if(Apps.frpc_ak == "" || Apps.frpc_sk == "" || Apps.frpc_domain == "ex.example.com" || Apps.frpc_domain == ""){
-	//	alert("信息填写不完整，请检查后再提交！");
-	//	return false;
-	//}
+	
 	//-------------- post Apps to dbus ---------------
 	var id = 1 + Math.floor(Math.random() * 6);
 	var postData = {"id": id, "method":'frpc_config.sh', "params":[], "fields": Apps};
@@ -148,7 +147,7 @@ var log_mode = [['debug', 'debug'], ['info', 'info'], ['warn', 'warn'], ['error'
 //var option_mode = [['1', 'whatismyip.akamai.com'], ['2', 'WAN'], ['3', 'WAN2'], ['4', 'WAN3'], ['5', 'WAN4'], ['6', 'ip.chinaz.com']];
 $('#frpc-fields').forms([
 { title: '开启frpc', name: 'frpc_enable', type: 'checkbox', value: ((Apps.frpc_enable == '1')? 1:0)},
-{ title: '运行状态', name: 'frpc_last_act', text: Apps.frpc_last_act ||'--' },
+{ title: '运行状态', name: 'frpc_last_act', text: Apps.frpc_last_act+" Frpc版本:"+Apps.frpc_version ||'--' },
 { title: '服务器地址', name: 'frpc_common_server_addr', type: 'text', maxlen: 25, size: 25, value: Apps.frpc_common_server_addr ||'0.0.0.0' },
 { title: '服务器端口', name: 'frpc_common_server_port', type: 'text', maxlen: 5, size: 5, value: Apps.frpc_common_server_port ||'7000' },
 { title: '日志记录文件', name: 'frpc_common_log_file', type: 'text', maxlen: 25, size: 25, value: Apps.frpc_common_log_file ||'/tmp/frpc.log' },
