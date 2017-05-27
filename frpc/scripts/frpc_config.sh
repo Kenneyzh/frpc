@@ -44,9 +44,10 @@ write_conf(){
 start_frpc(){
     $KSROOT/frpc/frpc -c $conf_file &
     sleep 1
-    if [ "`ps|grep frpc|grep -v grep|grep -v config|wc -l`" != "0" ];then
+    if [ "`ps|grep frpc|grep -v grep|grep -v /bin/sh|wc -l`" != "0" ];then
         dbus set frpc_last_act='<font color=green>服务已开启</font>'
         logger '[syncthing]:frpc is started!'
+        /bin/sh $KSROOT/scripts/frpc_check.sh&
     else
         dbus set frpc_last_act='<font color=red>服务无法启动，请检查配置是否正确</font>'
         dbus set frpc_enable=0
@@ -63,9 +64,12 @@ stop_frpc(){
 }
 
 auto_start(){
-    if [ ! -L "$KSROOT/init.d/S96frpc.sh" ]; then 
-		    ln -sf $KSROOT/scripts/frpc_config.sh $KSROOT/init.d/S96frpc.sh
-	fi
+    if [ -L "$KSROOT/init.d/S96frpc.sh" ]; then
+            rm -rf $KSROOT/init.d/S96frpc.sh
+    fi
+    if [ `dbus get frpc_enable` == 1 ];then
+            ln -sf $KSROOT/scripts/frpc_check.sh $KSROOT/init.d/S96frpc.sh
+    fi
 }
 
 case $ACTION in
@@ -84,9 +88,7 @@ stop)
         http_response '设置已保存！切勿重复提交！页面将在3秒后刷新'
 	else
         stop_frpc
-        if [ -L "$KSROOT/init.d/S96frpc.sh" ]; then
-            rm -rf $KSROOT/init.d/S96frpc.sh
-        fi
+        auto_start
         http_response '设置已保存！切勿重复提交！页面将在3秒后刷新'
     fi
     ;;
