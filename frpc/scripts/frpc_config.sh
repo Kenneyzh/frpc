@@ -43,10 +43,14 @@ write_conf(){
 
 start_frpc(){
     $KSROOT/frpc/frpc -c $conf_file &
+    sleep 1
     if [ "`ps|grep frpc|grep -v grep|grep -v config|wc -l`" != "0" ];then
         dbus set frpc_last_act='<font color=green>服务已开启</font>'
+        logger '[syncthing]:frpc is started!'
     else
         dbus set frpc_last_act='<font color=red>服务无法启动，请检查配置是否正确</font>'
+        dbus set frpc_enable=0
+        logger 'ERROR:[syncthing]:frpc is not started!'
     fi
 }
 
@@ -55,6 +59,7 @@ stop_frpc(){
         kill $i
     done
     dbus set frpc_last_act='<font color=red>服务已关闭</font>'
+    logger '[syncthing]:frpc is not stoped!'
 }
 
 auto_start(){
