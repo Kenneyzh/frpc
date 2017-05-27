@@ -60,7 +60,7 @@ stop_frpc(){
         kill $i
     done
     dbus set frpc_last_act='<font color=red>服务已关闭</font>'
-    logger '[syncthing]:frpc is not stoped!'
+    logger '[syncthing]:frpc is stoped!'
 }
 
 auto_start(){
