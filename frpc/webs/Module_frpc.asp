@@ -59,9 +59,9 @@ f[ 2 ].value   = '';
 f[ 3 ].value   = '';
 f[ 4 ].value   = '';
 f[ 5 ].value   = '';
-f[ 6 ].value   = 'false';
-f[ 7 ].value   = 'false';
-f[ 8 ].value   = 'false';
+f[ 6 ].value   = '关闭';
+f[ 7 ].value   = '关闭';
+f[ 8 ].value   = '开启';
 }
 frpc.setup = function() {
 this.init( 'frpc-grid', '', 50, [
@@ -73,7 +73,7 @@ this.init( 'frpc-grid', '', 50, [
 { type: 'text', maxlen: 5 },
 { type: 'select' ,options:[['关闭','关闭'],['开启','开启']]},
 { type: 'select' ,options:[['关闭','关闭'],['开启','开启']]},
-{ type: 'select' ,options:[['关闭','关闭'],['开启','开启']]},
+{ type: 'select' ,options:[['开启','开启'],['关闭','关闭']]},
 ] );
 this.headerSet( [ '服务名称', '协议类型', '域名', '内网地址' ,'内网端口','远程端口','压缩','加密','特权模式'] );
 if (Apps.frpc_srlist == undefined||Apps.frpc_srlist == null){
@@ -99,7 +99,7 @@ function save(){
 	Apps.frpc_common_log_file = E('_frpc_common_log_file').value;
 	Apps.frpc_common_log_level = E('_frpc_common_log_level').value;
 	Apps.frpc_common_log_max_days = E('_frpc_common_log_max_days').value;
-	Apps.frpc_common_auth_token = E('_frpc_common_auth_token').value;
+	//Apps.frpc_common_auth_token = E('_frpc_common_auth_token').value;
 	Apps.frpc_common_privilege_token = E('_frpc_common_privilege_token').value;
 	Apps.frpc_srlist = frpc_srlist;
 	
@@ -153,8 +153,8 @@ $('#frpc-fields').forms([
 { title: '日志记录文件', name: 'frpc_common_log_file', type: 'text', maxlen: 25, size: 25, value: Apps.frpc_common_log_file ||'/tmp/frpc.log' },
 { title: '日志记录等级', name: 'frpc_common_log_level', type: 'select', options:log_mode,value:Apps.frpc_common_log_level || 'info'},
 { title: '日志记录时间', name: 'frpc_common_log_max_days', type: 'select', options:time_mode,value:Apps.frpc_common_log_max_days || '1' ,suffix:'日志保存最长时间'},
-{ title: '认证密码', name: 'frpc_common_auth_token', type: 'text', maxlen: 20, size: 20, value: Apps.frpc_common_auth_token ,suffix:'如果没有请留空'},
-{ title: '特权连接密码', name: 'frpc_common_privilege_token', type: 'text', maxlen: 20, size: 20, value: Apps.frpc_common_privilege_token ,suffix:'如果没有请留空'},
+//{ title: '认证密码', name: 'frpc_common_auth_token', type: 'text', maxlen: 20, size: 20, value: Apps.frpc_common_auth_token ,suffix:'如果没有请留空'},
+{ title: '特权连接密码(privilege_token)', name: 'frpc_common_privilege_token', type: 'text', maxlen: 20, size: 20, value: Apps.frpc_common_privilege_token ,suffix:'如果没有请留空'},
 //{ title: '域名', name: 'frpc_domain', type: 'text', maxlen: 32, size: 34, value: Apps.frpc_domain || 'ex.example.com'},
 //{ title: 'DNS服务器', name: 'frpc_dns', type: 'text', maxlen: 15, size: 15, value: Apps.frpc_dns ||'223.5.5.5',suffix:'<small>查询域名当前IP时使用的DNS解析服务器，默认为阿里云DNS</small>'},
 //{ title: '获取IP接口', name: 'frpc_curl', type: 'select', options:option_mode,value:Apps.frpc_curl || '1'},
@@ -165,11 +165,22 @@ $('#frpc-fields').forms([
 </div>
 <div class="box">
 <div class="heading">配置服务</div>
-<br><hr>
+<hr>
 <div class="content">
 <table class="line-table" cellspacing=1 id="frpc-grid"></table>	
 <script type="text/javascript">frpc.setup();</script>
 <br><hr>
+<h4>配置说明：</h4>
+<div class="section" id="sesdiv_notes2">
+				<ul>
+					<li>当协议类型为HTTP/HTTPS时，远程端口的设置无效，不需要填写，访问端口为服务端设置的vhost_http_port或vhost_https_port</li>
+					<li>当协议类型为TCP/UDP时，域名设置无效，不需要填写</li>
+					<li>除以上两项外，其他项都需要正确填写</li>
+					<li>特权模式（privilege_mode）开启后，添加服务时不用在服务器端添加相应的服务即可生效。需要正确填写 特权连接密码(privilege_token)，如果没有请在服务端设置</li>
+				</ul>
+			</div>
+<br>
+<hr>
 </div>
 </div>
 <button type="button" value="Save" id="save-button" onclick="save()" class="btn btn-primary">保存 <i class="icon-check"></i></button>
